@@ -66,10 +66,12 @@ function Keahlian({ forceVisible }) {
       <div className={`card-sweep ${visible ? 'sweep-run' : ''}`} />
       <div className="card-tech-label">skills.json</div>
       <h2 className={`reveal-child ${visible ? 'child-visible' : ''}`} style={{ '--delay': '0.1s' }}>Keahlian</h2>
-      <div className="skills-grid">
-        {skills.map((skill, i) => (
-          <SkillCard key={skill.name} skill={skill} barAnimate={barAnimate} cardVisible={cardVisible.includes(i)} />
-        ))}
+      <div className="card-scroll-area">
+        <div className="skills-grid">
+          {skills.map((skill, i) => (
+            <SkillCard key={skill.name} skill={skill} barAnimate={barAnimate} cardVisible={cardVisible.includes(i)} />
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -66,10 +66,12 @@ function Proyek({ forceVisible }) {
       <div className={`card-sweep ${visible ? 'sweep-run' : ''}`} />
       <div className="card-tech-label">projects.ts</div>
       <h2 className={`reveal-child ${visible ? 'child-visible' : ''}`} style={{ '--delay': '0.1s' }}>Proyek</h2>
-      <div className="projects-grid">
-        {projects.map((project, i) => (
-          <ProjectCard key={project.id} project={project} cardVisible={cardsVisible.includes(i)} />
-        ))}
+      <div className="card-scroll-area">
+        <div className="projects-grid">
+          {projects.map((project, i) => (
+            <ProjectCard key={project.id} project={project} cardVisible={cardsVisible.includes(i)} />
+          ))}
+        </div>
       </div>
     </section>
   );

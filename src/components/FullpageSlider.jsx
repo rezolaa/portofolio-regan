@@ -35,6 +35,27 @@ function FullpageSlider({ slides, labels }) {
   useEffect(() => {
     let acc = 0;
     const onWheel = (e) => {
+      // Find if we are scrolling inside a scrollable container
+      let el = e.target;
+      let scrollEl = null;
+      while (el && el !== document.body) {
+        if (el.classList && (el.classList.contains('card-scroll-area') || el.classList.contains('slide-inner'))) {
+          scrollEl = el;
+          break;
+        }
+        el = el.parentElement;
+      }
+
+      if (scrollEl) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+        const isScrollable = scrollHeight > clientHeight + 5;
+        if (isScrollable) {
+          // If scrolling down and not at bottom, or scrolling up and not at top, allow inner scroll
+          if (e.deltaY > 0 && scrollTop + clientHeight < scrollHeight - 10) return;
+          if (e.deltaY < 0 && scrollTop > 5) return;
+        }
+      }
+
       e.preventDefault();
       acc += e.deltaY;
       if (Math.abs(acc) > 60) { acc > 0 ? goNext() : goPrev(); acc = 0; }
@@ -43,15 +64,47 @@ function FullpageSlider({ slides, labels }) {
     return () => window.removeEventListener('wheel', onWheel);
   }, [goNext, goPrev]);
 
-  /* touch */
+  /* touch — only navigate when content is at scroll boundary */
   useEffect(() => {
-    const onStart = (e) => { touchY.current = e.touches[0].clientY; };
-    const onEnd   = (e) => {
-      if (touchY.current === null) return;
-      const dy = touchY.current - e.changedTouches[0].clientY;
-      if (Math.abs(dy) > 50) { dy > 0 ? goNext() : goPrev(); }
-      touchY.current = null;
+    const startRef = { y: null, scrollTop: 0, innerEl: null };
+
+    const onStart = (e) => {
+      const y = e.touches[0].clientY;
+      // Walk up the DOM to find the nearest scrollable container
+      let el = e.target;
+      let scrollEl = null;
+      while (el && el !== document.body) {
+        if (el.classList && (el.classList.contains('card-scroll-area') || el.classList.contains('slide-inner'))) {
+          scrollEl = el;
+          break;
+        }
+        el = el.parentElement;
+      }
+      startRef.y        = y;
+      startRef.scrollTop = scrollEl ? scrollEl.scrollTop : 0;
+      startRef.innerEl   = scrollEl;
     };
+
+    const onEnd = (e) => {
+      if (startRef.y === null) return;
+      const dy = startRef.y - e.changedTouches[0].clientY;
+
+      if (startRef.innerEl) {
+        const { scrollTop, scrollHeight, clientHeight } = startRef.innerEl;
+        const isScrollable = scrollHeight > clientHeight + 5;
+
+        if (isScrollable) {
+          // Swipe up → next slide, but only if content is already at the bottom
+          if (dy > 50 && scrollTop + clientHeight < scrollHeight - 10) return;
+          // Swipe down → prev slide, but only if content is already at the top
+          if (dy < -50 && scrollTop > 5) return;
+        }
+      }
+
+      if (Math.abs(dy) > 50) { dy > 0 ? goNext() : goPrev(); }
+      startRef.y = null;
+    };
+
     window.addEventListener('touchstart', onStart, { passive: true });
     window.addEventListener('touchend',   onEnd,   { passive: true });
     return () => {
