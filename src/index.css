@@ -1748,7 +1748,8 @@ html, body, #root { height: 100%; overflow: hidden; }
     padding: 10px 16px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    margin: auto 0;
   }
 
   .slide-content-wrap .card {
@@ -1758,7 +1759,7 @@ html, body, #root { height: 100%; overflow: hidden; }
 
   .slide-inner {
     padding: 16px 12px 80px;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     height: 100%;
     max-height: 100%;
@@ -1920,7 +1921,7 @@ html, body, #root { height: 100%; overflow: hidden; }
 
   /* ── card scroll area ── */
   .card-scroll-area {
-    max-height: 290px;
+    max-height: 55vh;
   }
 
   /* ── Tentang: stack vertically ── */
@@ -1992,7 +1993,7 @@ html, body, #root { height: 100%; overflow: hidden; }
   .slide-inner          { padding: 12px 10px 80px; }
 
   .slide-content-wrap .card { padding: 16px 12px; border-radius: 14px; }
-  .card-scroll-area     { max-height: 230px; }
+  .card-scroll-area     { max-height: 48vh; }
   .card h2              { font-size: 1.15rem; }
 
   .hero-text h1         { font-size: 1.4rem; }
